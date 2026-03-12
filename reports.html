@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reports — redshift</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:               #0a0a0a;
+      --surface:          #111111;
+      --surface2:         #161616;
+      --border:           #1e1e1e;
+      --text:             #e8e8e8;
+      --muted:            #555555;
+      --accent:           #c0392b;
+      --accent-dim:       rgba(192, 57, 43, 0.12);
+      --accent-border:    rgba(192, 57, 43, 0.35);
+      --amber:            #d97706;
+      --amber-bg:         rgba(217, 119, 6, 0.08);
+      --amber-border:     rgba(217, 119, 6, 0.3);
+      --green:            #16a34a;
+      --green-bg:         rgba(22, 163, 74, 0.08);
+      --green-border:     rgba(22, 163, 74, 0.3);
+      --mono: 'Courier New', monospace;
+      --serif: 'Georgia', serif;
+    }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--serif); font-size: 14px; line-height: 1.6; }
+
+    /* ── Layout ── */
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 52px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-family: var(--mono);
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    nav { display: flex; gap: 1.8rem; }
+
+    nav a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: lowercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover, nav a.active { color: var(--text); }
+    nav a.active { color: var(--accent); }
+
+    .body { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Sidebar ── */
+    aside {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-label {
+      padding: 1.2rem 1rem 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .report-item {
+      padding: 0.7rem 1rem;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .report-item:hover { background: var(--surface2); }
+
+    .report-item.active {
+      background: var(--accent-dim);
+      border-left-color: var(--accent);
+    }
+
+    .report-item .r-date {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+
+    .report-item .r-sub {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Main ── */
+    main { flex: 1; overflow-y: auto; padding: 2.5rem 3rem; }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 0.8rem;
+    }
+
+    .empty-state .e-icon { font-size: 2.5rem; }
+    .empty-state p { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    /* ── Report header ── */
+    .report-heading {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .report-date {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Stats ── */
+    .stats { display: flex; gap: 0.75rem; margin-bottom: 2rem; }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.7rem 1.2rem;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .stat .num { font-family: var(--mono); font-size: 1.6rem; font-weight: 700; color: var(--text); }
+    .stat.crit .num  { color: var(--accent); }
+    .stat.watch .num { color: var(--amber); }
+    .stat.total .num { color: var(--muted); }
+    .stat .lbl { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+    /* ── Summary ── */
+    .summary {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--muted);
+      padding: 1rem 1.2rem;
+      margin-bottom: 2rem;
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .summary .s-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    /* ── Section ── */
+    .section { margin-bottom: 2rem; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    .badge-crit  { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+    .badge-watch { background: var(--amber-bg);   color: var(--amber);  border: 1px solid var(--amber-border); }
+    .badge-notes { background: var(--green-bg);   color: var(--green);  border: 1px solid var(--green-border); }
+
+    .section-count { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+
+    /* ── Cards ── */
+    .card {
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.6rem;
+      transition: background 0.15s;
+    }
+
+    .card:hover { background: var(--surface2); }
+    .section-crit  .card { border-left-color: var(--accent); }
+    .section-watch .card { border-left-color: var(--amber); }
+
+    .card-title {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-row { display: flex; gap: 0.6rem; margin-bottom: 0.25rem; font-size: 0.8rem; }
+    .card-row .lbl { font-family: var(--mono); color: var(--muted); min-width: 90px; flex-shrink: 0; font-size: 0.72rem; }
+    .card-row .val { color: var(--text); }
+    .card-row a { color: var(--accent); text-decoration: none; word-break: break-all; }
+    .card-row a:hover { text-decoration: underline; }
+
+    /* ── Notes ── */
+    .notes-body {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      padding: 1rem 1.2rem;
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .no-items { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); padding: 0.5rem 0; font-style: italic; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+
+    @media (max-width: 640px) {
+      aside { width: 180px; }
+      main { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <a class="logo" href="index.html">redshift</a>
+    <nav>
+      <a href="#">work</a>
+      <a href="#">writing</a>
+      <a href="reports.html" class="active">reports</a>
+      <a href="#">about</a>
+    </nav>
+  </header>
+
+  <div class="body">
+    <aside>
+      <div class="sidebar-label">Threat Intel</div>
+      <div id="sidebar"></div>
+    </aside>
+
+    <main id="main">
+      <div class="empty-state">
+        <div class="e-icon">◈</div>
+        <p>select a report</p>
+      </div>
+    </main>
+  </div>
+
+</div>
+
+<script>
+  // Add reports here as new ones are generated (filename only, inside reports/)
+  const REPORTS = [
+    'threat_report_20260310_1145.txt',
+  ];
+
+  function formatDate(filename) {
+    const m = filename.match(/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);
+    if (!m) return filename;
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${parseInt(m[3])} ${months[parseInt(m[2])-1]} ${m[1]}`;
+  }
+
+  function formatTime(filename) {
+    const m = filename.match(/_(\d{2})(\d{2})$/);
+    return m ? `${m[1]}:${m[2]}` : '';
+  }
+
+  // Build sidebar
+  const sidebar = document.getElementById('sidebar');
+  REPORTS.forEach((fn, i) => {
+    const el = document.createElement('div');
+    el.className = 'report-item' + (i === 0 ? ' active' : '');
+    el.innerHTML = `<div class="r-date">${formatDate(fn)}</div><div class="r-sub">${formatTime(fn)}</div>`;
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.report-item').forEach(e => e.classList.remove('active'));
+      el.classList.add('active');
+      loadReport(fn);
+    });
+    sidebar.appendChild(el);
+  });
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function extractSection(text, heading, stops) {
+    const start = text.indexOf(heading);
+    if (start === -1) return '';
+    let end = text.length;
+    for (const s of stops) {
+      const idx = text.indexOf(s, start + heading.length);
+      if (idx !== -1 && idx < end) end = idx;
+    }
+    return text.substring(start + heading.length, end).replace(/^[-=\s]+/, '').trim();
+  }
+
+  function parseItems(text) {
+    if (!text) return [];
+    const items = [];
+    const chunks = text.split(/^>>/m).filter(c => c.trim());
+    for (const chunk of chunks) {
+      const item = { title: '', why: '', details: '', source: '', link: '' };
+      const lines = chunk.split('\n');
+      item.title = lines[0].trim();
+      for (const line of lines.slice(1)) {
+        const l = line.trim();
+        if (l.startsWith('Why it matters:'))  item.why     = l.replace('Why it matters:', '').trim();
+        else if (l.startsWith('Key details:')) item.details = l.replace('Key details:', '').trim();
+        else if (l.startsWith('Source:'))      item.source  = l.replace('Source:', '').trim();
+        else if (l.startsWith('Link:'))        item.link    = l.replace('Link:', '').trim();
+      }
+      if (item.title) items.push(item);
+    }
+    return items;
+  }
+
+  function parseReport(text) {
+    let date = '';
+    const lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes('THREAT INTELLIGENCE DAILY BRIEFING')) {
+        date = (lines[i + 1] || '').trim(); break;
+      }
+    }
+    const artMatch = text.match(/Articles reviewed:\s*(\d+)/);
+    const summary     = extractSection(text, 'EXECUTIVE SUMMARY',   ['CRITICAL REPORTS', 'INTERESTING REPORTS', 'ANALYST NOTES']);
+    const critText    = extractSection(text, 'CRITICAL REPORTS',    ['INTERESTING REPORTS', 'ANALYST NOTES', 'Articles reviewed']);
+    const watchText   = extractSection(text, 'INTERESTING REPORTS', ['ANALYST NOTES', 'Articles reviewed']);
+    const notes       = extractSection(text, 'ANALYST NOTES',       ['===', 'Articles reviewed']);
+    return {
+      date,
+      summary:     summary.replace(/^[-=\s]+/, '').replace(/[-=\s]+$/, '').trim(),
+      notes:       notes.replace(/^[-=\s]+/, '').replace(/[-=\s]+$/, '').trim(),
+      critical:    parseItems(critText),
+      interesting: parseItems(watchText),
+      articles:    artMatch ? parseInt(artMatch[1]) : 0,
+    };
+  }
+
+  function renderCard(item) {
+    return `
+      <div class="card">
+        <div class="card-title">${esc(item.title)}</div>
+        ${item.why     ? `<div class="card-row"><span class="lbl">why it matters</span><span class="val">${esc(item.why)}</span></div>` : ''}
+        ${item.details ? `<div class="card-row"><span class="lbl">key details</span><span class="val">${esc(item.details)}</span></div>` : ''}
+        ${item.source  ? `<div class="card-row"><span class="lbl">source</span><span class="val">${esc(item.source)}</span></div>` : ''}
+        ${item.link    ? `<div class="card-row"><span class="lbl">link</span><span class="val"><a href="${esc(item.link)}" target="_blank" rel="noopener">${esc(item.link)}</a></span></div>` : ''}
+      </div>`;
+  }
+
+  function renderReport(d) {
+    document.getElementById('main').innerHTML = `
+      <div class="report-heading">Threat Intelligence Briefing</div>
+      <div class="report-date">${esc(d.date)}</div>
+
+      <div class="stats">
+        <div class="stat crit">  <div class="num">${d.critical.length}</div>   <div class="lbl">Critical</div></div>
+        <div class="stat watch"> <div class="num">${d.interesting.length}</div><div class="lbl">Watch</div></div>
+        <div class="stat total"> <div class="num">${d.articles}</div>          <div class="lbl">Reviewed</div></div>
+      </div>
+
+      ${d.summary ? `<div class="summary"><div class="s-label">Executive Summary</div>${esc(d.summary)}</div>` : ''}
+
+      <div class="section section-crit">
+        <div class="section-header">
+          <span class="badge badge-crit">Critical</span>
+          <span class="section-count">${d.critical.length} item${d.critical.length !== 1 ? 's' : ''} &mdash; immediate attention</span>
+        </div>
+        ${d.critical.length ? d.critical.map(renderCard).join('') : '<div class="no-items">none today</div>'}
+      </div>
+
+      <div class="section section-watch">
+        <div class="section-header">
+          <span class="badge badge-watch">Watch</span>
+          <span class="section-count">${d.interesting.length} item${d.interesting.length !== 1 ? 's' : ''} &mdash; awareness / watch list</span>
+        </div>
+        ${d.interesting.length ? d.interesting.map(renderCard).join('') : '<div class="no-items">none today</div>'}
+      </div>
+
+      ${d.notes ? `
+      <div class="section">
+        <div class="section-header"><span class="badge badge-notes">Analyst Notes</span></div>
+        <div class="notes-body">${esc(d.notes)}</div>
+      </div>` : ''}
+    `;
+  }
+
+  function loadReport(filename) {
+    fetch(`reports/${filename}`)
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
+      .then(text => renderReport(parseReport(text)))
+      .catch(() => {
+        document.getElementById('main').innerHTML = `<div class="empty-state"><div class="e-icon">✕</div><p>could not load report</p></div>`;
+      });
+  }
+
+  // Auto-load first report
+  if (REPORTS.length) loadReport(REPORTS[0]);
+</script>
+</body>
+</html>

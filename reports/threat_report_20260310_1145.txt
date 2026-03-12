@@ -1,0 +1,145 @@
+=================================================
+THREAT INTELLIGENCE DAILY BRIEFING
+Tuesday 10 March 2026 — 11:45
+=================================================
+
+EXECUTIVE SUMMARY
+-----------------
+Today's threat landscape is active across multiple vectors of direct relevance
+to banking. The most pressing issues are a newly actively-exploited Ivanti EPM
+auth bypass, a widely-exploited Cisco SD-WAN vulnerability, and an ongoing
+Microsoft Teams phishing campaign specifically targeting financial sector
+employees to deploy backdoor malware. A major Salesforce Experience Cloud
+exploitation campaign is also underway that could affect banks using the
+platform for customer portals. Nation-state activity (APT28, North Korean
+groups) remains elevated.
+
+-------------------------------------------------
+CRITICAL REPORTS  [immediate attention required]
+-------------------------------------------------
+
+>> Ivanti EPM Authentication Bypass (CVE-2026-1603) — Actively Exploited
+   Why it matters: Ivanti Endpoint Manager is widely deployed in enterprise
+   environments including banks for device management. An auth bypass now
+   confirmed as actively exploited gives attackers unauthenticated access to
+   managed endpoints — a foothold into the entire estate.
+   Key details: CISA added to KEV catalog 09 Mar. Federal agencies given 3-week
+   patch deadline. Patch immediately if you run Ivanti EPM.
+   Source: Bleeping Computer / CISA Current Activity
+   Link: https://www.bleepingcomputer.com/news/security/cisa-recently-patched-ivanti-epm-flaw-now-actively-exploited/
+
+>> Cisco Catalyst SD-WAN (CVE-2026-20127) — Widely Exploited in the Wild
+   Why it matters: Cisco SD-WAN is common in bank branch networking
+   infrastructure. WatchTowr is reporting exploitation attempts from numerous
+   unique IP addresses — this is mass exploitation, not targeted.
+   Key details: Patch available. Check exposure of management interfaces.
+   Prioritise if Cisco Catalyst SD-WAN is in your network estate.
+   Source: SecurityWeek
+   Link: https://www.securityweek.com/recent-cisco-catalyst-sd-wan-vulnerability-now-widely-exploited/
+
+>> Microsoft Teams Phishing → A0Backdoor (Targeting Financial Sector)
+   Why it matters: Attackers are directly targeting financial and healthcare
+   employees via Teams messages, social-engineering them into granting remote
+   access via Quick Assist, then deploying a new backdoor called A0Backdoor.
+   This is a direct, active threat to your staff.
+   Key details: Initial access via Teams external message → Quick Assist abuse
+   → persistent backdoor. Review Teams external access policies and Quick
+   Assist availability on endpoints.
+   Source: Bleeping Computer
+   Link: https://www.bleepingcomputer.com/news/security/microsoft-teams-phishing-targets-employees-with-backdoors/
+
+>> Salesforce Experience Cloud Mass-Exploitation (ShinyHunters / AuraInspector)
+   Why it matters: Many banks use Salesforce Experience Cloud for customer
+   portals and CRM. Misconfigured guest user permissions are being mass-scanned
+   using a modified AuraInspector tool. ShinyHunters also claims a new
+   undisclosed bug enabling active data theft.
+   Key details: Audit Experience Cloud guest user permissions immediately.
+   ShinyHunters claim is unverified but the group has a credible track record.
+   Source: Bleeping Computer / The Hacker News
+   Link: https://www.bleepingcomputer.com/news/security/shinyhunters-claims-ongoing-salesforce-aura-data-theft-attacks/
+
+-------------------------------------------------
+INTERESTING REPORTS  [awareness / watch list]
+-------------------------------------------------
+
+>> APT28 Deploys Custom Covenant C2 Framework
+   Why it matters: Russian state-sponsored APT28 is using a customised variant
+   of the open-source Covenant post-exploitation framework for long-term
+   espionage. Financial institutions are a persistent APT28 target.
+   Key details: Custom variant likely designed to evade standard Covenant
+   detections. Update hunting rules accordingly.
+   Source: Bleeping Computer
+   Link: https://www.bleepingcomputer.com/news/security/apt28-hackers-deploy-customized-variant-of-covenant-open-source-tool/
+
+>> UNC4899 (North Korea / Jade Sleet) Crypto Firm Breach via AirDrop
+   Why it matters: North Korean threat actor used a trojanised file transferred
+   via AirDrop to a developer's work device to compromise a crypto firm. As
+   banks expand into digital assets this TTP is directly relevant.
+   Key details: Developer used personal device near work device; AirDrop
+   used as initial infection vector into cloud environment. Enforce MDM
+   policies on BYOD and disable AirDrop on corporate devices.
+   Source: The Hacker News
+   Link: https://thehackernews.com/2026/03/unc4899-used-airdrop-file-transfer-and.html
+
+>> Coruna iOS Exploit Kit — 5 Full Exploit Chains for iOS 13–17.2.1
+   Why it matters: A powerful iOS exploit kit with 5 full chains and 23
+   exploits has been identified by Google GTIG. Senior banking executives and
+   high-value targets using iPhones on older firmware are at risk of
+   zero-click or one-click compromise.
+   Key details: Targets iOS 13.0–17.2.1. Ensure all corporate iPhones are
+   on iOS 17.3+ minimum. Consider this in executive device policy.
+   Source: Mandiant Blog (Google GTIG)
+   Link: https://cloud.google.com/blog/topics/threat-intelligence/coruna-powerful-ios-exploit-kit/
+
+>> SIM Swap Attacks — Critical Identity Security Flaw
+   Why it matters: SIM swapping is a well-known but resurging attack vector
+   against banking customers and staff, bypassing SMS-based MFA. Directly
+   relevant to both customer fraud and internal account takeover.
+   Key details: Article covers systemic weaknesses in telco identity processes.
+   Reinforce push to FIDO2/hardware tokens for privileged access.
+   Source: SecurityWeek
+   Link: https://www.securityweek.com/sim-swaps-expose-a-critical-flaw-in-identity-security/
+
+>> Malicious AI Browser Extensions Harvesting LLM Chat Histories
+   Why it matters: ~900,000 installs across 20,000+ enterprise tenants.
+   Extensions harvested ChatGPT and DeepSeek chat histories. Staff using AI
+   tools for work may be inadvertently leaking sensitive data.
+   Key details: Review browser extension policies. Consider blocking
+   unapproved AI-related extensions via endpoint management.
+   Source: Microsoft Security Blog
+   Link: https://www.microsoft.com/en-us/security/blog/2026/03/05/malicious-ai-assistant-extensions-harvest-llm-chat-histories/
+
+>> Tycoon2FA Phishing-as-a-Service Disrupted (but Remains a Threat)
+   Why it matters: Tycoon2FA is an adversary-in-the-middle (AiTM) PhaaS
+   platform hitting 500,000+ organisations monthly, bypassing MFA. Microsoft
+   and Europol disrupted infrastructure but PhaaS platforms typically rebuild.
+   Key details: AiTM bypasses TOTP-based MFA. This reinforces the case for
+   phishing-resistant MFA (FIDO2) for all internet-facing banking services.
+   Source: Microsoft Security Blog
+   Link: https://www.microsoft.com/en-us/security/blog/2026/03/04/inside-tycoon2fa-how-a-leading-aitm-phishing-kit-operated-at-scale/
+
+>> Mandiant 2025 Zero-Day Review — Enterprise Exploitation Rising
+   Why it matters: Google GTIG tracked 90 zero-days in 2025. Structural shift
+   toward enterprise software exploitation (vs. consumer) continues — banks
+   are firmly in scope.
+   Key details: Enterprise security products increasingly targeted. Patch
+   cadence and vendor security posture are now as important as perimeter defence.
+   Source: Mandiant Blog
+   Link: https://cloud.google.com/blog/topics/threat-intelligence/2025-zero-day-review/
+
+-------------------------------------------------
+ANALYST NOTES
+-------------------------------------------------
+The convergence of AI-assisted attack tooling (North Korean groups, Claude
+abuse for government hacking) with a sustained wave of actively-exploited
+enterprise vulnerabilities represents an elevated threat tempo this week.
+The Teams → Quick Assist → backdoor chain targeting financial sector staff
+is operationally mature and should be treated as an active incident response
+trigger if any Quick Assist sessions are detected from Teams-originated
+contacts. The Salesforce Experience Cloud situation warrants an immediate
+configuration audit if your bank operates customer-facing portals on the
+platform.
+
+=================================================
+Articles reviewed: 76  |  Report generated: 10 March 2026
+=================================================
