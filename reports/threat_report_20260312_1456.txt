@@ -1,0 +1,103 @@
+=================================================
+THREAT INTELLIGENCE DAILY BRIEFING
+Thursday 12 March 2026  14:56
+=================================================
+
+EXECUTIVE SUMMARY
+-----------------
+Threat tempo today is elevated across multiple vectors with a strong patch
+Tuesday hangover, active nation-state destructive attacks, and a high-profile
+data breach. Iranian-linked hacktivists have taken a major medical technology
+firm offline using wiper malware, signalling continued willingness to deploy
+destructive capabilities beyond typical espionage. The n8n RCE vulnerability
+(CVE-2025-68613) is actively exploited with 24,700 instances still exposed —
+any bank using n8n for workflow automation must patch immediately. A new
+Android banking malware cluster targeting Pix payments and banking apps is a
+direct threat to retail banking customers.
+
+-------------------------------------------------
+CRITICAL REPORTS  [immediate attention required]
+-------------------------------------------------
+
+>> Six Android Malware Families Target Pix Payments, Banking Apps, and Crypto Wallets
+   Why it matters: Six newly discovered Android malware families directly target
+   banking applications and financial fraud — this is an immediate threat to retail
+   banking customers and mobile banking platforms used by the bank.
+   Key details:    Capabilities include credential theft, overlay attacks on banking
+   apps, Pix payment hijacking, and crypto wallet draining. Six distinct families
+   in active circulation suggests an organised campaign rather than isolated actors.
+   Source:         The Hacker News
+   Link:           https://thehackernews.com/2026/03/six-android-malware-families-target-pix.html
+
+>> CISA Flags Actively Exploited n8n RCE Bug — 24,700 Instances Exposed (CVE-2025-68613)
+   Why it matters: n8n is widely used for internal workflow automation, including
+   in financial and operations teams. An unauthenticated RCE flaw actively exploited
+   in the wild with a massive attack surface means any exposed instance is a likely
+   initial access vector into the bank's internal network.
+   Key details:    CVE-2025-68613 — Improper Control of Dynamically-Managed Code
+   Resources. Unauthenticated remote code execution. CISA KEV listed. 24,700
+   internet-exposed instances remain unpatched. Patch or isolate immediately.
+   Source:         The Hacker News / CISA
+   Link:           https://thehackernews.com/2026/03/cisa-flags-actively-exploited-n8n-rce.html
+
+>> Telus Digital Confirms Breach — Hacker Claims 1 Petabyte Stolen
+   Why it matters: Telus Digital is a major BPO (business process outsourcing)
+   provider. If any bank outsources customer service, back-office, or IT operations
+   to Telus Digital, customer data and operational credentials may be compromised.
+   Third-party supplier breaches are a top risk vector for financial institutions.
+   Key details:    Threat actor claims ~1 petabyte of data exfiltrated. Telus Digital
+   has confirmed an incident is under investigation. Scope unclear. Third-party risk
+   assessment required immediately for any bank with a Telus Digital relationship.
+   Source:         Bleeping Computer
+   Link:           https://www.bleepingcomputer.com/news/security/telus-digital-confirms-breach-after-hacker-claims-1-petabyte-data-theft/
+
+-------------------------------------------------
+INTERESTING REPORTS  [awareness / watch list]
+-------------------------------------------------
+
+>> Stryker Offline After Iran-Linked Wiper Malware Attack (Handala Group)
+   Why it matters: Demonstrates Iranian-linked threat actors deploying destructive
+   wiper malware against large enterprises — escalation in TTPs relevant to banks
+   operating in geopolitically sensitive environments.
+   Key details:    Handala group claims 200,000+ devices wiped. Iran-linked,
+   pro-Palestinian hacktivist nexus. Destructive capability now confirmed at scale.
+   Source:         Bleeping Computer / SecurityWeek
+   Link:           https://www.bleepingcomputer.com/news/security/medtech-giant-stryker-offline-after-iran-linked-wiper-malware-attack/
+
+>> Polyfill Supply Chain Attack Linked to North Korea (100k Sites Affected)
+   Why it matters: The 2024 polyfill.io supply chain compromise now has confirmed
+   North Korean involvement — any bank web properties that relied on polyfill.io
+   CDN at the time should treat the incident as a confirmed state-sponsored intrusion.
+   Key details:    Originally attributed to China, now linked to DPRK via infostealer
+   infection of an insider. 100,000+ websites affected. Retroactive IOC review
+   recommended for any bank with web properties active in 2024.
+   Source:         SecurityWeek
+   Link:           https://www.securityweek.com/polyfill-supply-chain-attack-impacting-100k-sites-linked-to-north-korea/
+
+>> BlackSanta EDR Killer Targeting HR Departments
+   Why it matters: A Russian-speaking threat actor has spent over a year targeting HR
+   departments specifically to deliver EDR-killing malware — HR staff are a soft
+   target in banks and a successful EDR kill would blind the security team.
+   Key details:    New EDR killer named BlackSanta delivered via HR-targeted
+   spearphishing. Russian-speaking actor. Active for 12+ months. HR department
+   awareness training and EDR tamper-protection policies should be reviewed.
+   Source:         Bleeping Computer
+   Link:           https://www.bleepingcomputer.com/news/security/new-blacksanta-edr-killer-spotted-targeting-hr-departments/
+
+-------------------------------------------------
+ANALYST NOTES
+-------------------------------------------------
+This week's landscape is defined by three converging pressures: destructive
+nation-state attacks moving beyond espionage (Stryker/Handala), a surge in
+mobile banking malware directly targeting retail customers, and a critical
+exploitation window on n8n that remains dangerously wide. The Telus Digital
+breach is the most immediately actionable item for any bank with BPO
+relationships — third-party risk teams should be reaching out today. The
+revised attribution of the Polyfill supply chain attack to North Korea is a
+reminder that initial attribution is often wrong and that DPRK remains highly
+active in financially motivated and destructive operations targeting the West.
+
+=================================================
+Articles reviewed: 62
+Report generated: Thursday 12 March 2026  14:56
+=================================================
