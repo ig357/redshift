@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>threat actors — redshift</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson@3/dist/topojson.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -64,6 +66,94 @@
     .page-header h1 { font-size: 1.5rem; font-weight: 400; color: var(--text); margin-bottom: 0.4rem; }
     .page-header .meta { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
 
+    /* ── Stats bar ── */
+    .stats-bar { display: flex; gap: 2rem; margin-bottom: 2rem; padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border); }
+    .stat { display: flex; flex-direction: column; gap: 0.2rem; }
+    .stat-value { font-family: var(--mono); font-size: 1.3rem; color: var(--text); }
+    .stat-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+
+    /* ── World map ── */
+    .map-section {
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .map-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .map-section-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .map-legend {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    #world-map { width: 100%; line-height: 0; }
+    #world-map svg { display: block; width: 100%; }
+
+    .map-country { cursor: default; transition: opacity 0.15s; }
+    .map-country.clickable { cursor: pointer; }
+    .map-country.clickable:hover { opacity: 0.75; }
+
+    /* ── Tooltip ── */
+    .map-tooltip {
+      display: none;
+      position: fixed;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.9rem;
+      pointer-events: none;
+      z-index: 100;
+      min-width: 160px;
+      max-width: 240px;
+    }
+
+    .tt-origin {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tt-actor { display: flex; flex-direction: column; margin-bottom: 0.35rem; }
+    .tt-name { font-family: var(--mono); font-size: 0.72rem; color: var(--text); }
+    .tt-date { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); }
+
     /* ── Filters ── */
     .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; align-items: center; }
     .filter-label { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; margin-right: 0.3rem; }
@@ -87,12 +177,6 @@
     .filter-btn[data-origin="China"].active     { color: var(--china);  border-color: var(--china);  background: var(--china-bg); }
     .filter-btn[data-origin="Iran"].active      { color: var(--iran);   border-color: var(--iran);   background: var(--iran-bg); }
     .filter-btn[data-origin="eCrime"].active    { color: var(--ecrime); border-color: var(--ecrime); background: var(--ecrime-bg); }
-
-    /* ── Stats bar ── */
-    .stats-bar { display: flex; gap: 2rem; margin-bottom: 2rem; padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border); }
-    .stat { display: flex; flex-direction: column; gap: 0.2rem; }
-    .stat-value { font-family: var(--mono); font-size: 1.3rem; color: var(--text); }
-    .stat-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
 
     /* ── Actor grid ── */
     .actor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1px; background: var(--border); }
@@ -129,12 +213,7 @@
     .origin-badge.iran    { color: var(--iran);   background: var(--iran-bg);   border: 1px solid rgba(22,163,74,0.3); }
     .origin-badge.ecrime  { color: var(--ecrime); background: var(--ecrime-bg); border: 1px solid rgba(8,145,178,0.3); }
 
-    .status-badge {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
+    .status-badge { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; }
     .status-badge.active   { color: #16a34a; }
     .status-badge.inactive { color: var(--muted); }
 
@@ -146,39 +225,17 @@
     .meta-val { font-family: var(--mono); font-size: 0.72rem; color: var(--text); }
 
     .targets { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .target-tag {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      padding: 0.15rem 0.4rem;
-      border: 1px solid var(--border);
-      color: var(--muted);
-    }
+    .target-tag { font-family: var(--mono); font-size: 0.62rem; padding: 0.15rem 0.4rem; border: 1px solid var(--border); color: var(--muted); }
 
     /* ── Recent activity ── */
-    .recent-activity {
-      border-top: 1px solid var(--border);
-      padding-top: 0.75rem;
-      margin-top: 0.1rem;
-    }
+    .recent-activity { border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.1rem; }
     .activity-header {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 0.35rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--accent);
+      text-transform: uppercase; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;
     }
     .activity-header::before {
-      content: '';
-      display: inline-block;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s ease-in-out infinite;
+      content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s ease-in-out infinite;
     }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     .activity-text { font-size: 0.78rem; color: var(--text); line-height: 1.6; }
@@ -188,12 +245,8 @@
 
     /* ── Footer ── */
     footer {
-      padding: 1.2rem 2rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface);
+      padding: 1.2rem 2rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; background: var(--surface);
     }
     footer span { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
 
@@ -203,6 +256,7 @@
       main { padding: 1.5rem 1rem 3rem; }
       .actor-grid { grid-template-columns: 1fr; }
       .stats-bar { gap: 1rem; flex-wrap: wrap; }
+      .map-legend { gap: 0.8rem; }
     }
   </style>
 </head>
@@ -232,6 +286,19 @@
       <div class="stat"><span class="stat-value" id="stat-ecrime">—</span><span class="stat-label">eCrime</span></div>
     </div>
 
+    <div class="map-section">
+      <div class="map-section-header">
+        <span class="map-section-label">origin heatmap — click a country to filter</span>
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div>Russia</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div>DPRK</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div>China</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>Iran</div>
+        </div>
+      </div>
+      <div id="world-map"></div>
+    </div>
+
     <div class="filters">
       <span class="filter-label">filter:</span>
       <button class="filter-btn active" data-origin="all">all</button>
@@ -254,9 +321,26 @@
 
 </div>
 
+<div class="map-tooltip" id="map-tooltip"></div>
+
 <script>
   let allActors = [];
   let activeFilter = 'all';
+
+  // Country numeric IDs (ISO 3166-1 numeric)
+  const ORIGIN_COUNTRY = {
+    'Russia': '643',
+    'China':  '156',
+    'DPRK':   '408',
+    'Iran':   '364',
+  };
+
+  const ORIGIN_COLOR = {
+    'Russia': '#c0392b',
+    'China':  '#d97706',
+    'DPRK':   '#7c3aed',
+    'Iran':   '#16a34a',
+  };
 
   function originClass(origin) {
     const map = { 'Russia': 'russia', 'DPRK': 'dprk', 'China': 'china', 'Iran': 'iran', 'eCrime': 'ecrime' };
@@ -279,6 +363,116 @@
       return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
     } catch { return false; }
   }
+
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  // ── World map ────────────────────────────────────────────────────────────
+
+  function buildMap(actors) {
+    // Score per origin: active actors + bonus for recent sightings
+    const scores = {};
+    const actorsByOrigin = {};
+
+    for (const actor of actors) {
+      const origin = actor.origin;
+      if (!ORIGIN_COUNTRY[origin]) continue;
+      const id = ORIGIN_COUNTRY[origin];
+      scores[id] = (scores[id] || 0) + (actor.active ? 1 : 0) + (actor.last_seen ? 2 : 0);
+      if (!actorsByOrigin[origin]) actorsByOrigin[origin] = [];
+      actorsByOrigin[origin].push(actor);
+    }
+
+    const maxScore = Math.max(...Object.values(scores), 1);
+
+    const container = document.getElementById('world-map');
+    const width = container.offsetWidth || 1100;
+    const height = Math.round(width * 0.48);
+
+    const svg = d3.select('#world-map')
+      .append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    const projection = d3.geoNaturalEarth1()
+      .scale(width / 6.4)
+      .translate([width / 2, height / 2]);
+
+    const path = d3.geoPath().projection(projection);
+    const tooltip = document.getElementById('map-tooltip');
+
+    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+      const countries = topojson.feature(world, world.objects.countries);
+
+      svg.selectAll('path')
+        .data(countries.features)
+        .enter()
+        .append('path')
+        .attr('class', d => {
+          const id = String(d.id);
+          const isTracked = Object.values(ORIGIN_COUNTRY).includes(id);
+          return 'map-country' + (isTracked ? ' clickable' : '');
+        })
+        .attr('d', path)
+        .attr('fill', d => {
+          const id = String(d.id);
+          for (const [origin, cid] of Object.entries(ORIGIN_COUNTRY)) {
+            if (cid === id) {
+              const score = scores[id] || 0;
+              const intensity = 0.25 + (score / maxScore) * 0.75;
+              return hexToRgba(ORIGIN_COLOR[origin], intensity);
+            }
+          }
+          return '#1c1c1c';
+        })
+        .attr('stroke', '#0a0a0a')
+        .attr('stroke-width', 0.4)
+        .on('mouseover', function(event, d) {
+          const id = String(d.id);
+          for (const [origin, cid] of Object.entries(ORIGIN_COUNTRY)) {
+            if (cid === id) {
+              const originActors = actorsByOrigin[origin] || [];
+              tooltip.style.display = 'block';
+              tooltip.innerHTML = `
+                <div class="tt-origin">${origin}</div>
+                ${originActors.map(a => `
+                  <div class="tt-actor">
+                    <span class="tt-name">${a.name}</span>
+                    <span class="tt-date">${formatDate(a.last_seen)}</span>
+                  </div>
+                `).join('')}
+              `;
+              return;
+            }
+          }
+        })
+        .on('mousemove', function(event) {
+          tooltip.style.left = (event.clientX + 14) + 'px';
+          tooltip.style.top  = (event.clientY - 10) + 'px';
+        })
+        .on('mouseout', function() {
+          tooltip.style.display = 'none';
+        })
+        .on('click', function(event, d) {
+          const id = String(d.id);
+          for (const [origin, cid] of Object.entries(ORIGIN_COUNTRY)) {
+            if (cid === id) {
+              const btn = document.querySelector(`.filter-btn[data-origin="${origin}"]`);
+              if (btn) btn.click();
+              return;
+            }
+          }
+        });
+    }).catch(() => {
+      container.innerHTML = '<div class="empty-state">map unavailable</div>';
+    });
+  }
+
+  // ── Actor cards ──────────────────────────────────────────────────────────
 
   function renderCard(actor) {
     const cls = originClass(actor.origin);
@@ -326,7 +520,6 @@
   function renderGrid(filter) {
     const filtered = filter === 'all' ? allActors : allActors.filter(a => a.origin === filter);
 
-    // Sort: has recent activity first, then alphabetical
     filtered.sort((a, b) => {
       if (a.last_seen && !b.last_seen) return -1;
       if (!a.last_seen && b.last_seen) return 1;
@@ -335,21 +528,19 @@
     });
 
     const grid = document.getElementById('actor-grid');
-    if (!filtered.length) {
-      grid.innerHTML = '<div class="empty-state">no actors match this filter</div>';
-    } else {
-      grid.innerHTML = filtered.map(renderCard).join('');
-    }
+    grid.innerHTML = filtered.length
+      ? filtered.map(renderCard).join('')
+      : '<div class="empty-state">no actors match this filter</div>';
 
     document.getElementById('footer-count').textContent =
       `${filtered.length} actor${filtered.length !== 1 ? 's' : ''} displayed`;
   }
 
   function updateStats(actors) {
-    const active = actors.filter(a => a.active).length;
-    const recent = actors.filter(a => isThisMonth(a.last_seen)).length;
+    const active      = actors.filter(a => a.active).length;
+    const recent      = actors.filter(a => isThisMonth(a.last_seen)).length;
     const stateActors = actors.filter(a => ['Russia', 'DPRK', 'China', 'Iran'].includes(a.origin)).length;
-    const ecrime = actors.filter(a => a.origin === 'eCrime').length;
+    const ecrime      = actors.filter(a => a.origin === 'eCrime').length;
 
     document.getElementById('stat-total').textContent  = actors.length;
     document.getElementById('stat-active').textContent = active;
@@ -367,9 +558,11 @@
       const lastUpdated = data.last_updated
         ? new Date(data.last_updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
         : 'unknown';
-      document.getElementById('last-updated').textContent = `${allActors.length} profiles · last updated ${lastUpdated}`;
+      document.getElementById('last-updated').textContent =
+        `${allActors.length} profiles · last updated ${lastUpdated}`;
 
       updateStats(allActors);
+      buildMap(allActors);
       renderGrid(activeFilter);
     } catch (err) {
       document.getElementById('actor-grid').innerHTML =
