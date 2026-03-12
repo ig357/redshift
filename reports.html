@@ -204,12 +204,15 @@
       const item = { title: '', why: '', details: '', source: '', link: '' };
       const lines = chunk.split('\n');
       item.title = lines[0].trim();
+      let currentField = null;
       for (const line of lines.slice(1)) {
         const l = line.trim();
-        if (l.startsWith('Why it matters:'))  item.why     = l.replace('Why it matters:', '').trim();
-        else if (l.startsWith('Key details:')) item.details = l.replace('Key details:', '').trim();
-        else if (l.startsWith('Source:'))      item.source  = l.replace('Source:', '').trim();
-        else if (l.startsWith('Link:'))        item.link    = l.replace('Link:', '').trim();
+        if (!l) { currentField = null; continue; }
+        if (l.startsWith('Why it matters:'))  { item.why     = l.replace('Why it matters:', '').trim();  currentField = 'why'; }
+        else if (l.startsWith('Key details:')) { item.details = l.replace('Key details:', '').trim();     currentField = 'details'; }
+        else if (l.startsWith('Source:'))      { item.source  = l.replace('Source:', '').trim();          currentField = 'source'; }
+        else if (l.startsWith('Link:'))        { item.link    = l.replace('Link:', '').trim();             currentField = 'link'; }
+        else if (currentField && item[currentField]) { item[currentField] += ' ' + l; }
       }
       if (item.title) items.push(item);
     }
