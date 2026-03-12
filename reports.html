@@ -29,8 +29,7 @@
 
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--serif); font-size: 14px; line-height: 1.6; }
 
-    /* ── Layout ── */
-    .app { display: flex; flex-direction: column; height: 100vh; }
+    .app { display: flex; flex-direction: column; min-height: 100vh; }
 
     header {
       display: flex;
@@ -41,111 +40,26 @@
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .logo {
-      font-family: var(--mono);
-      font-size: 1rem;
-      letter-spacing: 0.15em;
-      color: var(--accent);
-      text-decoration: none;
-    }
-
+    .logo { font-family: var(--mono); font-size: 1rem; letter-spacing: 0.15em; color: var(--accent); text-decoration: none; }
     nav { display: flex; gap: 1.8rem; }
-
-    nav a {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      text-decoration: none;
-      text-transform: lowercase;
-      transition: color 0.2s;
-    }
-
-    nav a:hover, nav a.active { color: var(--text); }
+    nav a { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted); text-decoration: none; text-transform: lowercase; transition: color 0.2s; }
+    nav a:hover { color: var(--text); }
     nav a.active { color: var(--accent); }
 
-    .body { display: flex; flex: 1; overflow: hidden; }
+    main { flex: 1; max-width: 860px; width: 100%; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
 
-    /* ── Sidebar ── */
-    aside {
-      width: 220px;
-      flex-shrink: 0;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    .sidebar-label {
-      padding: 1.2rem 1rem 0.5rem;
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .report-item {
-      padding: 0.7rem 1rem;
-      cursor: pointer;
-      border-left: 2px solid transparent;
-      transition: all 0.15s;
-    }
-
-    .report-item:hover { background: var(--surface2); }
-
-    .report-item.active {
-      background: var(--accent-dim);
-      border-left-color: var(--accent);
-    }
-
-    .report-item .r-date {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      color: var(--text);
-    }
-
-    .report-item .r-sub {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    /* ── Main ── */
-    main { flex: 1; overflow-y: auto; padding: 2.5rem 3rem; }
-
-    .empty-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 0.8rem;
-    }
-
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6rem 0; gap: 0.8rem; }
     .empty-state .e-icon { font-size: 2.5rem; }
     .empty-state p { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; }
 
     /* ── Report header ── */
-    .report-heading {
-      font-family: var(--serif);
-      font-size: 1.4rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.25rem;
-    }
-
-    .report-date {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      margin-bottom: 2rem;
-    }
+    .report-heading { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; color: var(--text); margin-bottom: 0.25rem; }
+    .report-date { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 2rem; }
 
     /* ── Stats ── */
     .stats { display: flex; gap: 0.75rem; margin-bottom: 2rem; }
@@ -175,14 +89,7 @@
       color: var(--text);
     }
 
-    .summary .s-label {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
-    }
+    .summary .s-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
 
     /* ── Section ── */
     .section { margin-bottom: 2rem; }
@@ -196,15 +103,7 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .badge {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 2px;
-    }
-
+    .badge { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
     .badge-crit  { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
     .badge-watch { background: var(--amber-bg);   color: var(--amber);  border: 1px solid var(--amber-border); }
     .badge-notes { background: var(--green-bg);   color: var(--green);  border: 1px solid var(--green-border); }
@@ -224,13 +123,7 @@
     .section-crit  .card { border-left-color: var(--accent); }
     .section-watch .card { border-left-color: var(--amber); }
 
-    .card-title {
-      font-family: var(--serif);
-      font-size: 0.95rem;
-      color: var(--text);
-      margin-bottom: 0.6rem;
-    }
-
+    .card-title { font-family: var(--serif); font-size: 0.95rem; color: var(--text); margin-bottom: 0.6rem; }
     .card-row { display: flex; gap: 0.6rem; margin-bottom: 0.25rem; font-size: 0.8rem; }
     .card-row .lbl { font-family: var(--mono); color: var(--muted); min-width: 90px; flex-shrink: 0; font-size: 0.72rem; }
     .card-row .val { color: var(--text); }
@@ -238,25 +131,17 @@
     .card-row a:hover { text-decoration: underline; }
 
     /* ── Notes ── */
-    .notes-body {
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--green);
-      padding: 1rem 1.2rem;
-      font-size: 0.88rem;
-      line-height: 1.75;
-      color: var(--text);
-    }
+    .notes-body { border: 1px solid var(--border); border-left: 3px solid var(--green); padding: 1rem 1.2rem; font-size: 0.88rem; line-height: 1.75; color: var(--text); }
 
     .no-items { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); padding: 0.5rem 0; font-style: italic; }
 
-    /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); }
 
     @media (max-width: 640px) {
-      aside { width: 180px; }
-      main { padding: 1.5rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .stats { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -271,19 +156,12 @@
     </nav>
   </header>
 
-  <div class="body">
-    <aside>
-      <div class="sidebar-label">Threat Intel</div>
-      <div id="sidebar"></div>
-    </aside>
-
-    <main id="main">
-      <div class="empty-state">
-        <div class="e-icon">◈</div>
-        <p>select a report</p>
-      </div>
-    </main>
-  </div>
+  <main id="main">
+    <div class="empty-state">
+      <div class="e-icon">◈</div>
+      <p>loading...</p>
+    </div>
+  </main>
 
 </div>
 
@@ -293,32 +171,6 @@
     'threat_report_20260312_1456.txt',
     'threat_report_20260310_1145.txt',
   ];
-
-  function formatDate(filename) {
-    const m = filename.match(/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);
-    if (!m) return filename;
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return `${parseInt(m[3])} ${months[parseInt(m[2])-1]} ${m[1]}`;
-  }
-
-  function formatTime(filename) {
-    const m = filename.match(/_(\d{2})(\d{2})$/);
-    return m ? `${m[1]}:${m[2]}` : '';
-  }
-
-  // Build sidebar
-  const sidebar = document.getElementById('sidebar');
-  REPORTS.forEach((fn, i) => {
-    const el = document.createElement('div');
-    el.className = 'report-item' + (i === 0 ? ' active' : '');
-    el.innerHTML = `<div class="r-date">${formatDate(fn)}</div><div class="r-sub">${formatTime(fn)}</div>`;
-    el.addEventListener('click', () => {
-      document.querySelectorAll('.report-item').forEach(e => e.classList.remove('active'));
-      el.classList.add('active');
-      loadReport(fn);
-    });
-    sidebar.appendChild(el);
-  });
 
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -435,7 +287,6 @@
       });
   }
 
-  // Auto-load first report
   if (REPORTS.length) loadReport(REPORTS[0]);
 </script>
 </body>
