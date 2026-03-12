@@ -84,6 +84,7 @@
       border: 1px solid var(--border);
       border-left: 3px solid var(--muted);
       padding: 1rem 1.2rem;
+      margin-bottom: 2rem;
       font-size: 0.88rem;
       line-height: 1.75;
       color: var(--text);
@@ -260,9 +261,9 @@
           <div class="stat watch"> <div class="num">${d.interesting.length}</div><div class="lbl">Watch</div></div>
           <div class="stat total"> <div class="num">${d.articles}</div>          <div class="lbl">Reviewed</div></div>
         </div>
-
-        ${d.summary ? `<div class="summary"><div class="s-label">Executive Summary</div>${esc(d.summary)}</div>` : ''}
       </div>
+
+      ${d.summary ? `<div class="summary"><div class="s-label">Executive Summary</div>${esc(d.summary)}</div>` : ''}
 
       <div class="sections-grid">
         <div class="section section-crit">
