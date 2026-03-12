@@ -407,7 +407,7 @@
       <div class="section section-crit">
         <div class="section-header">
           <span class="badge badge-crit">Critical</span>
-          <span class="section-count">${d.critical.length} item${d.critical.length !== 1 ? 's' : ''} &mdash; immediate attention</span>
+          <span class="section-count">${d.critical.length} item${d.critical.length !== 1 ? 's' : ''}</span>
         </div>
         ${d.critical.length ? d.critical.map(renderCard).join('') : '<div class="no-items">none today</div>'}
       </div>
@@ -415,7 +415,7 @@
       <div class="section section-watch">
         <div class="section-header">
           <span class="badge badge-watch">Watch</span>
-          <span class="section-count">${d.interesting.length} item${d.interesting.length !== 1 ? 's' : ''} &mdash; awareness / watch list</span>
+          <span class="section-count">${d.interesting.length} item${d.interesting.length !== 1 ? 's' : ''}</span>
         </div>
         ${d.interesting.length ? d.interesting.map(renderCard).join('') : '<div class="no-items">none today</div>'}
       </div>
