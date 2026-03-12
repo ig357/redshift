@@ -199,7 +199,7 @@
   function parseItems(text) {
     if (!text) return [];
     const items = [];
-    const chunks = text.split(/^>>/m).filter(c => c.trim());
+    const chunks = text.split(/^>>/m).slice(1).filter(c => c.trim());
     for (const chunk of chunks) {
       const item = { title: '', why: '', details: '', source: '', link: '' };
       const lines = chunk.split('\n');
