@@ -51,18 +51,19 @@
     nav a:hover { color: var(--text); }
     nav a.active { color: var(--accent); }
 
-    main { flex: 1; max-width: 860px; width: 100%; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+    main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
 
     .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6rem 0; gap: 0.8rem; }
     .empty-state .e-icon { font-size: 2.5rem; }
     .empty-state p { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; }
 
-    /* ── Report header ── */
+    /* ── Report header (centred) ── */
+    .report-top { max-width: 640px; margin: 0 auto 2.5rem; text-align: center; }
     .report-heading { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; color: var(--text); margin-bottom: 0.25rem; }
-    .report-date { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 2rem; }
+    .report-date { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 1.5rem; }
 
     /* ── Stats ── */
-    .stats { display: flex; gap: 0.75rem; margin-bottom: 2rem; }
+    .stats { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
 
     .stat {
       border: 1px solid var(--border);
@@ -83,13 +84,16 @@
       border: 1px solid var(--border);
       border-left: 3px solid var(--muted);
       padding: 1rem 1.2rem;
-      margin-bottom: 2rem;
       font-size: 0.88rem;
       line-height: 1.75;
       color: var(--text);
+      text-align: left;
     }
 
     .summary .s-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+
+    /* ── Two-column sections layout ── */
+    .sections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
 
     /* ── Section ── */
     .section { margin-bottom: 2rem; }
@@ -138,6 +142,10 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); }
+
+    @media (max-width: 860px) {
+      .sections-grid { grid-template-columns: 1fr; }
+    }
 
     @media (max-width: 640px) {
       main { padding: 1.5rem 1rem 3rem; }
@@ -243,31 +251,35 @@
 
   function renderReport(d) {
     document.getElementById('main').innerHTML = `
-      <div class="report-heading">Critical Reports</div>
-      <div class="report-date">${esc(d.date)}</div>
+      <div class="report-top">
+        <div class="report-heading">Critical Reports</div>
+        <div class="report-date">${esc(d.date)}</div>
 
-      <div class="stats">
-        <div class="stat crit">  <div class="num">${d.critical.length}</div>   <div class="lbl">Critical</div></div>
-        <div class="stat watch"> <div class="num">${d.interesting.length}</div><div class="lbl">Watch</div></div>
-        <div class="stat total"> <div class="num">${d.articles}</div>          <div class="lbl">Reviewed</div></div>
+        <div class="stats">
+          <div class="stat crit">  <div class="num">${d.critical.length}</div>   <div class="lbl">Critical</div></div>
+          <div class="stat watch"> <div class="num">${d.interesting.length}</div><div class="lbl">Watch</div></div>
+          <div class="stat total"> <div class="num">${d.articles}</div>          <div class="lbl">Reviewed</div></div>
+        </div>
+
+        ${d.summary ? `<div class="summary"><div class="s-label">Executive Summary</div>${esc(d.summary)}</div>` : ''}
       </div>
 
-      ${d.summary ? `<div class="summary"><div class="s-label">Executive Summary</div>${esc(d.summary)}</div>` : ''}
-
-      <div class="section section-crit">
-        <div class="section-header">
-          <span class="badge badge-crit">Critical</span>
-          <span class="section-count">${d.critical.length} item${d.critical.length !== 1 ? 's' : ''}</span>
+      <div class="sections-grid">
+        <div class="section section-crit">
+          <div class="section-header">
+            <span class="badge badge-crit">Critical</span>
+            <span class="section-count">${d.critical.length} item${d.critical.length !== 1 ? 's' : ''}</span>
+          </div>
+          ${d.critical.length ? d.critical.map(renderCard).join('') : '<div class="no-items">none today</div>'}
         </div>
-        ${d.critical.length ? d.critical.map(renderCard).join('') : '<div class="no-items">none today</div>'}
-      </div>
 
-      <div class="section section-watch">
-        <div class="section-header">
-          <span class="badge badge-watch">Watch</span>
-          <span class="section-count">${d.interesting.length} item${d.interesting.length !== 1 ? 's' : ''}</span>
+        <div class="section section-watch">
+          <div class="section-header">
+            <span class="badge badge-watch">Watch</span>
+            <span class="section-count">${d.interesting.length} item${d.interesting.length !== 1 ? 's' : ''}</span>
+          </div>
+          ${d.interesting.length ? d.interesting.map(renderCard).join('') : '<div class="no-items">none today</div>'}
         </div>
-        ${d.interesting.length ? d.interesting.map(renderCard).join('') : '<div class="no-items">none today</div>'}
       </div>
 
       ${d.notes ? `
