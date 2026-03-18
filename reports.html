@@ -8,274 +8,149 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:               #080808;
-      --surface:          #0f0f0f;
-      --surface2:         #141414;
-      --surface3:         #181818;
-      --border:           #1c1c1c;
-      --text:             #e0e0e0;
-      --muted:            #666;
-      --dim:              #444;
+      --bg:               #0a0a0a;
+      --surface:          #111111;
+      --surface2:         #161616;
+      --border:           #1e1e1e;
+      --text:             #e8e8e8;
+      --muted:            #777777;
       --accent:           #c0392b;
-      --accent-dim:       rgba(192,57,43,0.12);
-      --accent-border:    rgba(192,57,43,0.35);
+      --accent-dim:       rgba(192, 57, 43, 0.12);
+      --accent-border:    rgba(192, 57, 43, 0.35);
       --amber:            #d97706;
-      --amber-bg:         rgba(217,119,6,0.09);
-      --amber-border:     rgba(217,119,6,0.3);
+      --amber-bg:         rgba(217, 119, 6, 0.08);
+      --amber-border:     rgba(217, 119, 6, 0.3);
       --green:            #16a34a;
-      --green-bg:         rgba(22,163,74,0.09);
-      --green-border:     rgba(22,163,74,0.3);
-      --mono:             'Courier New', monospace;
-      --serif:            'Georgia', serif;
-      --sidebar-w:        260px;
+      --green-bg:         rgba(22, 163, 74, 0.08);
+      --green-border:     rgba(22, 163, 74, 0.3);
+      --mono: 'Courier New', monospace;
+      --serif: 'Georgia', serif;
     }
 
-    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; line-height: 1.6; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--serif); font-size: 14px; line-height: 1.6; }
 
-    .app { display: flex; flex-direction: column; height: 100%; }
+    .app { display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* ── Header ── */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.5rem;
+      padding: 0 2rem;
       height: 52px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
       position: sticky;
       top: 0;
-      z-index: 20;
-      flex-shrink: 0;
+      z-index: 10;
     }
 
-    .logo { font-size: 0.95rem; letter-spacing: 0.2em; color: var(--accent); text-decoration: none; }
+    .logo { font-family: var(--mono); font-size: 1rem; letter-spacing: 0.15em; color: var(--accent); text-decoration: none; }
     nav { display: flex; gap: 1.8rem; }
-    nav a { font-size: 0.72rem; letter-spacing: 0.12em; color: var(--muted); text-decoration: none; text-transform: lowercase; transition: color 0.2s; }
+    nav a { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted); text-decoration: none; text-transform: lowercase; transition: color 0.2s; }
     nav a:hover { color: var(--text); }
     nav a.active { color: var(--accent); }
 
-    /* ── Body layout ── */
-    .body { display: flex; flex: 1; overflow: hidden; }
+    main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
 
-    /* ── Sidebar ── */
-    .sidebar {
-      width: var(--sidebar-w);
-      flex-shrink: 0;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6rem 0; gap: 0.8rem; }
+    .empty-state .e-icon { font-size: 2.5rem; }
+    .empty-state p { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; }
 
-    .sidebar-header {
-      padding: 1.25rem 1.2rem 0.75rem;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .sidebar-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.4rem;
-    }
-    .sidebar-count { font-size: 0.68rem; color: var(--dim); }
+    /* ── Report header (centred) ── */
+    .report-top { max-width: 640px; margin: 0 auto 2.5rem; text-align: center; }
+    .report-heading { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; color: var(--text); margin-bottom: 0.25rem; }
+    .report-date { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 1.5rem; }
 
-    .report-list { flex: 1; overflow-y: auto; }
+    /* ── Stats ── */
+    .stats { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
 
-    .report-item {
-      padding: 0.9rem 1.2rem;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: background 0.12s;
-      border-left: 3px solid transparent;
-    }
-    .report-item:hover { background: var(--surface2); }
-    .report-item.active {
-      background: var(--surface2);
-      border-left-color: var(--accent);
-    }
-
-    .ri-date {
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      margin-bottom: 0.3rem;
-    }
-    .ri-title { font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
-    .ri-stats {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: 0.4rem;
-      font-size: 0.6rem;
-    }
-    .ri-crit  { color: var(--accent); }
-    .ri-watch { color: var(--amber); }
-    .ri-total { color: var(--dim); }
-
-    /* ── Content area ── */
-    .content { flex: 1; overflow-y: auto; background: var(--bg); }
-
-    .loading-state, .error-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 60vh;
-      gap: 0.6rem;
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-    .loading-state .icon, .error-state .icon { font-size: 2rem; margin-bottom: 0.5rem; color: var(--dim); }
-
-    /* ── Report layout ── */
-    .report-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2.5rem 5rem; }
-
-    /* ── Report masthead ── */
-    .report-masthead {
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 2rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .report-eyebrow {
-      font-size: 0.6rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
-    }
-
-    .report-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
-    .report-date  { font-size: 0.72rem; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1.5rem; }
-
-    .report-stats {
-      display: flex;
-      gap: 1px;
-      background: var(--border);
+    .stat {
       border: 1px solid var(--border);
-      overflow: hidden;
+      border-radius: 4px;
+      padding: 0.7rem 1.2rem;
+      text-align: center;
+      min-width: 80px;
     }
 
-    .rs {
-      flex: 1;
-      background: var(--surface);
-      padding: 0.9rem 1.2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    .rs-num { font-size: 1.8rem; line-height: 1; }
-    .rs-num.crit  { color: var(--accent); }
-    .rs-num.watch { color: var(--amber); }
-    .rs-num.total { color: var(--muted); }
-    .rs-lbl { font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); }
+    .stat .num { font-family: var(--mono); font-size: 1.6rem; font-weight: 700; color: var(--text); }
+    .stat.crit .num  { color: var(--accent); }
+    .stat.watch .num { color: var(--amber); }
+    .stat.total .num { color: var(--muted); }
+    .stat .lbl { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
 
-    /* ── Executive summary ── */
-    .exec-summary {
+    /* ── Summary ── */
+    .summary {
       border: 1px solid var(--border);
       border-left: 3px solid var(--muted);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 2.5rem;
+      padding: 1rem 1.2rem;
+      margin-bottom: 2rem;
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: var(--text);
+      text-align: left;
     }
-    .section-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-    }
-    .exec-summary p { font-family: var(--serif); font-size: 0.88rem; line-height: 1.85; color: var(--text); }
 
-    /* ── Two-col grid ── */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+    .summary .s-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+
+    /* ── Two-column sections layout ── */
+    .sections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
 
     /* ── Section ── */
-    .section { }
-    .section-head {
+    .section { margin-bottom: 2rem; }
+
+    .section-header {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
       padding-bottom: 0.6rem;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 0.75rem;
     }
 
-    .badge { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border: 1px solid; }
-    .badge-crit  { color: var(--accent); background: var(--accent-dim); border-color: var(--accent-border); }
-    .badge-watch { color: var(--amber);  background: var(--amber-bg);   border-color: var(--amber-border); }
-    .badge-notes { color: var(--green);  background: var(--green-bg);   border-color: var(--green-border); }
+    .badge { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
+    .badge-crit  { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+    .badge-watch { background: var(--amber-bg);   color: var(--amber);  border: 1px solid var(--amber-border); }
+    .badge-notes { background: var(--green-bg);   color: var(--green);  border: 1px solid var(--green-border); }
 
-    .section-count { font-size: 0.65rem; color: var(--dim); }
+    .section-count { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
 
-    /* ── Intel card ── */
-    .intel-card {
+    /* ── Cards ── */
+    .card {
       border: 1px solid var(--border);
       border-left: 3px solid transparent;
       padding: 1rem 1.2rem;
-      margin-bottom: 0.5rem;
-      background: var(--surface);
-      transition: background 0.12s;
+      margin-bottom: 0.6rem;
+      transition: background 0.15s;
     }
-    .intel-card:hover { background: var(--surface2); }
-    .section-crit  .intel-card { border-left-color: var(--accent); }
-    .section-watch .intel-card { border-left-color: var(--amber); }
 
-    .ic-title { font-family: var(--serif); font-size: 0.9rem; color: var(--text); margin-bottom: 0.6rem; line-height: 1.5; }
+    .card:hover { background: var(--surface2); }
+    .section-crit  .card { border-left-color: var(--accent); }
+    .section-watch .card { border-left-color: var(--amber); }
 
-    .ic-row { display: flex; gap: 0.75rem; margin-bottom: 0.2rem; font-size: 0.75rem; }
-    .ic-lbl { color: var(--muted); min-width: 88px; flex-shrink: 0; font-size: 0.68rem; letter-spacing: 0.04em; }
-    .ic-val { color: var(--text); flex: 1; }
-    .ic-val a { color: var(--accent); text-decoration: none; word-break: break-all; }
-    .ic-val a:hover { text-decoration: underline; }
+    .card-title { font-family: var(--serif); font-size: 0.95rem; color: var(--text); margin-bottom: 0.6rem; }
+    .card-row { display: flex; gap: 0.6rem; margin-bottom: 0.25rem; font-size: 0.8rem; }
+    .card-row .lbl { font-family: var(--mono); color: var(--muted); min-width: 90px; flex-shrink: 0; font-size: 0.72rem; }
+    .card-row .val { color: var(--text); }
+    .card-row a { color: var(--accent); text-decoration: none; word-break: break-all; }
+    .card-row a:hover { text-decoration: underline; }
 
-    /* ── Analyst notes ── */
-    .notes-card {
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--green);
-      padding: 1.25rem 1.5rem;
-      background: var(--surface);
-    }
-    .notes-card p { font-family: var(--serif); font-size: 0.88rem; line-height: 1.85; color: var(--text); }
+    /* ── Notes ── */
+    .notes-body { border: 1px solid var(--border); border-left: 3px solid var(--green); padding: 1rem 1.2rem; font-size: 0.88rem; line-height: 1.75; color: var(--text); }
 
-    .no-items { font-size: 0.7rem; color: var(--dim); font-style: italic; padding: 0.5rem 0; }
-
-    /* ── Mobile sidebar toggle ── */
-    .sidebar-toggle {
-      display: none;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      padding: 0.3rem 0.7rem;
-      cursor: pointer;
-    }
-    .sidebar-toggle:hover { color: var(--text); }
+    .no-items { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); padding: 0.5rem 0; font-style: italic; }
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); }
 
-    @media (max-width: 780px) {
-      .sidebar {
-        position: fixed;
-        top: 52px;
-        left: 0;
-        bottom: 0;
-        z-index: 15;
-        transform: translateX(-100%);
-        transition: transform 0.2s;
-        width: 280px;
-      }
-      .sidebar.open { transform: translateX(0); }
-      .sidebar-toggle { display: block; }
-      .report-wrap { padding: 1.5rem 1.2rem 4rem; }
-      .two-col { grid-template-columns: 1fr; }
+    @media (max-width: 860px) {
+      .sections-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      main { padding: 1.5rem 1rem 3rem; }
+      .stats { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -285,63 +160,30 @@
   <header>
     <a class="logo" href="index.html">redshift</a>
     <nav>
-      <button class="sidebar-toggle" id="sidebar-toggle">☰ reports</button>
       <a href="reports.html" class="active">reports</a>
       <a href="threat_actors.html">actors</a>
     </nav>
   </header>
 
-  <div class="body">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-label">Intelligence Reports</div>
-        <div class="sidebar-count" id="sidebar-count">—</div>
-      </div>
-      <div class="report-list" id="report-list">
-        <!-- populated by JS -->
-      </div>
-    </aside>
-
-    <!-- Content -->
-    <div class="content" id="content">
-      <div class="loading-state">
-        <div class="icon">◈</div>
-        <span>loading intelligence report...</span>
-      </div>
+  <main id="main">
+    <div class="empty-state">
+      <div class="e-icon">◈</div>
+      <p>loading...</p>
     </div>
-  </div>
+  </main>
 
 </div>
 
 <script>
+  // Add reports here as new ones are generated (filename only, inside reports/)
   const REPORTS = [
     'threat_report_20260318_1518.txt',
     'threat_report_20260312_1456.txt',
     'threat_report_20260310_1145.txt',
   ];
 
-  // Cache of parsed reports
-  const cache = {};
-  let currentIndex = 0;
-
-  // ── Helpers ──────────────────────────────────────────────────────────────
-
   function esc(s) {
-    return String(s)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function parseDateFromFilename(fn) {
-    const m = fn.match(/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);
-    if (!m) return null;
-    return new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}`);
-  }
-
-  function fmtDate(d) {
-    if (!d) return '—';
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   function extractSection(text, heading, stops) {
@@ -360,18 +202,18 @@
     const items = [];
     const chunks = text.split(/^>>/m).slice(1).filter(c => c.trim());
     for (const chunk of chunks) {
-      const item = { title:'', why:'', details:'', source:'', link:'' };
+      const item = { title: '', why: '', details: '', source: '', link: '' };
       const lines = chunk.split('\n');
       item.title = lines[0].trim();
-      let cur = null;
+      let currentField = null;
       for (const line of lines.slice(1)) {
         const l = line.trim();
-        if (!l) { cur = null; continue; }
-        if      (l.startsWith('Why it matters:')) { item.why     = l.replace('Why it matters:','').trim(); cur = 'why'; }
-        else if (l.startsWith('Key details:'))    { item.details = l.replace('Key details:','').trim();    cur = 'details'; }
-        else if (l.startsWith('Source:'))         { item.source  = l.replace('Source:','').trim();         cur = 'source'; }
-        else if (l.startsWith('Link:'))           { item.link    = l.replace('Link:','').trim();            cur = 'link'; }
-        else if (cur && item[cur])                { item[cur] += ' ' + l; }
+        if (!l) { currentField = null; continue; }
+        if (l.startsWith('Why it matters:'))  { item.why     = l.replace('Why it matters:', '').trim();  currentField = 'why'; }
+        else if (l.startsWith('Key details:')) { item.details = l.replace('Key details:', '').trim();     currentField = 'details'; }
+        else if (l.startsWith('Source:'))      { item.source  = l.replace('Source:', '').trim();          currentField = 'source'; }
+        else if (l.startsWith('Link:'))        { item.link    = l.replace('Link:', '').trim();             currentField = 'link'; }
+        else if (currentField && item[currentField]) { item[currentField] += ' ' + l; }
       }
       if (item.title) items.push(item);
     }
@@ -383,172 +225,86 @@
     const lines = text.split('\n');
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].includes('THREAT INTELLIGENCE DAILY BRIEFING')) {
-        date = (lines[i+1] || '').trim(); break;
+        date = (lines[i + 1] || '').trim(); break;
       }
     }
-    const artMatch  = text.match(/Articles reviewed:\s*(\d+)/);
-    const summary   = extractSection(text, 'EXECUTIVE SUMMARY',   ['CRITICAL REPORTS','INTERESTING REPORTS','ANALYST NOTES']);
-    const critText  = extractSection(text, 'CRITICAL REPORTS',    ['INTERESTING REPORTS','ANALYST NOTES','Articles reviewed']);
-    const watchText = extractSection(text, 'INTERESTING REPORTS', ['ANALYST NOTES','Articles reviewed']);
-    const notes     = extractSection(text, 'ANALYST NOTES',       ['===','Articles reviewed']);
+    const artMatch = text.match(/Articles reviewed:\s*(\d+)/);
+    const summary     = extractSection(text, 'EXECUTIVE SUMMARY',   ['CRITICAL REPORTS', 'INTERESTING REPORTS', 'ANALYST NOTES']);
+    const critText    = extractSection(text, 'CRITICAL REPORTS',    ['INTERESTING REPORTS', 'ANALYST NOTES', 'Articles reviewed']);
+    const watchText   = extractSection(text, 'INTERESTING REPORTS', ['ANALYST NOTES', 'Articles reviewed']);
+    const notes       = extractSection(text, 'ANALYST NOTES',       ['===', 'Articles reviewed']);
     return {
       date,
-      summary:     summary.replace(/^[-=\s]+/,'').replace(/[-=\s]+$/,'').trim(),
-      notes:       notes.replace(/^[-=\s]+/,'').replace(/[-=\s]+$/,'').trim(),
+      summary:     summary.replace(/^[-=\s]+/, '').replace(/[-=\s]+$/, '').trim(),
+      notes:       notes.replace(/^[-=\s]+/, '').replace(/[-=\s]+$/, '').trim(),
       critical:    parseItems(critText),
       interesting: parseItems(watchText),
       articles:    artMatch ? parseInt(artMatch[1]) : 0,
     };
   }
 
-  // ── Render ────────────────────────────────────────────────────────────────
-
-  function renderCard(item, sectionClass) {
+  function renderCard(item) {
     return `
-      <div class="intel-card">
-        <div class="ic-title">${esc(item.title)}</div>
-        ${item.why     ? `<div class="ic-row"><span class="ic-lbl">why it matters</span><span class="ic-val">${esc(item.why)}</span></div>` : ''}
-        ${item.details ? `<div class="ic-row"><span class="ic-lbl">key details</span><span class="ic-val">${esc(item.details)}</span></div>` : ''}
-        ${item.source  ? `<div class="ic-row"><span class="ic-lbl">source</span><span class="ic-val">${esc(item.source)}</span></div>` : ''}
-        ${item.link    ? `<div class="ic-row"><span class="ic-lbl">link</span><span class="ic-val"><a href="${esc(item.link)}" target="_blank" rel="noopener">${esc(item.link)}</a></span></div>` : ''}
+      <div class="card">
+        <div class="card-title">${esc(item.title)}</div>
+        ${item.why     ? `<div class="card-row"><span class="lbl">why it matters</span><span class="val">${esc(item.why)}</span></div>` : ''}
+        ${item.details ? `<div class="card-row"><span class="lbl">key details</span><span class="val">${esc(item.details)}</span></div>` : ''}
+        ${item.source  ? `<div class="card-row"><span class="lbl">source</span><span class="val">${esc(item.source)}</span></div>` : ''}
+        ${item.link    ? `<div class="card-row"><span class="lbl">link</span><span class="val"><a href="${esc(item.link)}" target="_blank" rel="noopener">${esc(item.link)}</a></span></div>` : ''}
       </div>`;
   }
 
-  function renderReport(d, filename) {
-    const fileDate = fmtDate(parseDateFromFilename(filename));
-    document.getElementById('content').innerHTML = `
-      <div class="report-wrap">
-        <div class="report-masthead">
-          <div class="report-eyebrow">threat intelligence · daily briefing</div>
-          <div class="report-title">Threat Intelligence Report</div>
-          <div class="report-date">${esc(d.date || fileDate)}</div>
-          <div class="report-stats">
-            <div class="rs"><div class="rs-num crit">${d.critical.length}</div><div class="rs-lbl">Critical</div></div>
-            <div class="rs"><div class="rs-num watch">${d.interesting.length}</div><div class="rs-lbl">Watch</div></div>
-            <div class="rs"><div class="rs-num total">${d.articles || '—'}</div><div class="rs-lbl">Reviewed</div></div>
+  function renderReport(d) {
+    document.getElementById('main').innerHTML = `
+      <div class="report-top">
+        <div class="report-heading">Critical Reports</div>
+        <div class="report-date">${esc(d.date)}</div>
+
+        <div class="stats">
+          <div class="stat crit">  <div class="num">${d.critical.length}</div>   <div class="lbl">Critical</div></div>
+          <div class="stat watch"> <div class="num">${d.interesting.length}</div><div class="lbl">Watch</div></div>
+          <div class="stat total"> <div class="num">${d.articles}</div>          <div class="lbl">Reviewed</div></div>
+        </div>
+      </div>
+
+      ${d.summary ? `<div class="summary"><div class="s-label">Executive Summary</div>${esc(d.summary)}</div>` : ''}
+
+      <div class="sections-grid">
+        <div class="section section-crit">
+          <div class="section-header">
+            <span class="badge badge-crit">Critical</span>
+            <span class="section-count">${d.critical.length} item${d.critical.length !== 1 ? 's' : ''}</span>
           </div>
+          ${d.critical.length ? d.critical.map(renderCard).join('') : '<div class="no-items">none today</div>'}
         </div>
 
-        ${d.summary ? `
-        <div class="exec-summary">
-          <div class="section-label">Executive Summary</div>
-          <p>${esc(d.summary)}</p>
-        </div>` : ''}
-
-        <div class="two-col">
-          <div class="section section-crit">
-            <div class="section-head">
-              <span class="badge badge-crit">Critical</span>
-              <span class="section-count">${d.critical.length} item${d.critical.length !== 1 ? 's' : ''}</span>
-            </div>
-            ${d.critical.length ? d.critical.map(i => renderCard(i)).join('') : '<div class="no-items">none</div>'}
+        <div class="section section-watch">
+          <div class="section-header">
+            <span class="badge badge-watch">Watch</span>
+            <span class="section-count">${d.interesting.length} item${d.interesting.length !== 1 ? 's' : ''}</span>
           </div>
-
-          <div class="section section-watch">
-            <div class="section-head">
-              <span class="badge badge-watch">Watch</span>
-              <span class="section-count">${d.interesting.length} item${d.interesting.length !== 1 ? 's' : ''}</span>
-            </div>
-            ${d.interesting.length ? d.interesting.map(i => renderCard(i)).join('') : '<div class="no-items">none</div>'}
-          </div>
+          ${d.interesting.length ? d.interesting.map(renderCard).join('') : '<div class="no-items">none today</div>'}
         </div>
+      </div>
 
-        ${d.notes ? `
-        <div class="section">
-          <div class="section-head"><span class="badge badge-notes">Analyst Notes</span></div>
-          <div class="notes-card"><p>${esc(d.notes)}</p></div>
-        </div>` : ''}
-      </div>`;
+      ${d.notes ? `
+      <div class="section">
+        <div class="section-header"><span class="badge badge-notes">Analyst Notes</span></div>
+        <div class="notes-body">${esc(d.notes)}</div>
+      </div>` : ''}
+    `;
   }
 
-  // ── Sidebar ───────────────────────────────────────────────────────────────
-
-  function buildSidebar(parsedReports) {
-    const list = document.getElementById('report-list');
-    document.getElementById('sidebar-count').textContent =
-      `${REPORTS.length} report${REPORTS.length !== 1 ? 's' : ''}`;
-
-    list.innerHTML = REPORTS.map((fn, i) => {
-      const d    = parsedReports[i];
-      const date = fmtDate(parseDateFromFilename(fn));
-      const crit = d ? d.critical.length    : '—';
-      const wtch = d ? d.interesting.length : '—';
-      return `
-        <div class="report-item ${i === currentIndex ? 'active' : ''}" data-index="${i}">
-          <div class="ri-date">${date}</div>
-          <div class="ri-title">Daily Intelligence Briefing</div>
-          <div class="ri-stats">
-            <span class="ri-crit">${crit} critical</span>
-            <span class="ri-watch">${wtch} watch</span>
-          </div>
-        </div>`;
-    }).join('');
-
-    list.querySelectorAll('.report-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const idx = parseInt(el.dataset.index);
-        selectReport(idx);
-        // close mobile sidebar
-        document.getElementById('sidebar').classList.remove('open');
+  function loadReport(filename) {
+    fetch(`reports/${filename}`)
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
+      .then(text => renderReport(parseReport(text)))
+      .catch(() => {
+        document.getElementById('main').innerHTML = `<div class="empty-state"><div class="e-icon">✕</div><p>could not load report</p></div>`;
       });
-    });
   }
 
-  function setActiveItem(idx) {
-    document.querySelectorAll('.report-item').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-    });
-  }
-
-  // ── Load ──────────────────────────────────────────────────────────────────
-
-  async function fetchReport(filename) {
-    if (cache[filename]) return cache[filename];
-    const res = await fetch(`reports/${filename}`);
-    if (!res.ok) throw new Error('not found');
-    const text = await res.text();
-    const parsed = parseReport(text);
-    cache[filename] = parsed;
-    return parsed;
-  }
-
-  async function selectReport(idx) {
-    currentIndex = idx;
-    setActiveItem(idx);
-    document.getElementById('content').innerHTML = `
-      <div class="loading-state"><div class="icon">◈</div><span>loading...</span></div>`;
-    try {
-      const parsed = await fetchReport(REPORTS[idx]);
-      renderReport(parsed, REPORTS[idx]);
-    } catch {
-      document.getElementById('content').innerHTML = `
-        <div class="error-state"><div class="icon">✕</div><span>could not load report</span></div>`;
-    }
-  }
-
-  // Initial load: check URL param ?r=N
-  async function init() {
-    // Pre-fetch all for sidebar metadata
-    const parsedCache = {};
-    await Promise.allSettled(REPORTS.map(async (fn, i) => {
-      try { parsedCache[i] = await fetchReport(fn); } catch {}
-    }));
-
-    // Determine which report to show first
-    const params = new URLSearchParams(window.location.search);
-    const rParam = parseInt(params.get('r') || '0');
-    currentIndex = (rParam >= 0 && rParam < REPORTS.length) ? rParam : 0;
-
-    buildSidebar(parsedCache);
-    selectReport(currentIndex);
-  }
-
-  // Mobile sidebar toggle
-  document.getElementById('sidebar-toggle').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
-  });
-
-  init();
+  if (REPORTS.length) loadReport(REPORTS[0]);
 </script>
 </body>
 </html>
