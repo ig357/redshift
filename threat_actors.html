@@ -10,10 +10,10 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:               #0a0a0a;
-      --surface:          #111111;
-      --surface2:         #161616;
-      --border:           #1e1e1e;
+      --bg:               #080808;
+      --surface:          #0f0f0f;
+      --surface2:         #141414;
+      --border:           #1c1c1c;
       --text:             #e8e8e8;
       --muted:            #777777;
       --accent:           #c0392b;
@@ -153,6 +153,46 @@
     .tt-actor { display: flex; flex-direction: column; margin-bottom: 0.35rem; }
     .tt-name { font-family: var(--mono); font-size: 0.72rem; color: var(--text); }
     .tt-date { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); }
+
+    /* ── Search ── */
+    .search-wrap { margin-bottom: 1rem; position: relative; }
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      padding: 0.6rem 1rem 0.6rem 2.2rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--muted); }
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search-clear {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: var(--muted);
+      cursor: pointer;
+      display: none;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .search-clear:hover { color: var(--text); }
 
     /* ── Filters ── */
     .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; align-items: center; }
@@ -297,6 +337,12 @@
         </div>
       </div>
       <div id="world-map"></div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" id="search-input" type="text" placeholder="search actors, aliases, targets..." autocomplete="off" spellcheck="false" />
+      <button class="search-clear" id="search-clear">✕</button>
     </div>
 
     <div class="filters">
@@ -517,8 +563,26 @@
     `;
   }
 
+  let searchQuery = '';
+
+  function matchesSearch(actor, q) {
+    if (!q) return true;
+    const haystack = [
+      actor.name,
+      ...(actor.aliases || []),
+      actor.origin,
+      actor.motivation,
+      actor.description,
+      ...(actor.primary_targets || []),
+    ].join(' ').toLowerCase();
+    return q.toLowerCase().split(/\s+/).filter(Boolean).every(term => haystack.includes(term));
+  }
+
   function renderGrid(filter) {
-    const filtered = filter === 'all' ? allActors : allActors.filter(a => a.origin === filter);
+    const q = searchQuery.trim();
+    const filtered = allActors
+      .filter(a => filter === 'all' || a.origin === filter)
+      .filter(a => matchesSearch(a, q));
 
     filtered.sort((a, b) => {
       if (a.last_seen && !b.last_seen) return -1;
@@ -578,6 +642,24 @@
       activeFilter = btn.dataset.origin;
       renderGrid(activeFilter);
     });
+  });
+
+  // Search
+  const searchInput = document.getElementById('search-input');
+  const searchClear = document.getElementById('search-clear');
+
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value;
+    searchClear.style.display = searchQuery ? 'block' : 'none';
+    renderGrid(activeFilter);
+  });
+
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    searchQuery = '';
+    searchClear.style.display = 'none';
+    searchInput.focus();
+    renderGrid(activeFilter);
   });
 
   loadActors();
