@@ -1,0 +1,63 @@
+=================================================
+THREAT INTELLIGENCE DAILY BRIEFING
+Friday 20 March 2026  09:42
+=================================================
+
+EXECUTIVE SUMMARY
+-----------------
+Three actively exploited vulnerabilities added to the CISA KEV catalogue this week
+(CVE-2026-20131, CVE-2026-20963, CVE-2025-66376) present immediate risk to enterprise
+infrastructure commonly deployed across UK financial institutions. In parallel, a newly
+identified iOS exploit kit (DarkSword) incorporating three zero-days has achieved
+multi-actor proliferation, raising the threat profile for mobile banking and executive
+device estates. The disruption of four large-scale IoT botnets responsible for record
+31.4 Tbps DDoS attacks provides temporary relief but does not eliminate the underlying
+threat, as the affiliate model enables rapid reconstitution. DPRK IT worker sanctions
+and new Android banking malware (Perseus) round out a high-tempo week requiring
+coordinated detection, patching, and awareness responses.
+
+-------------------------------------------------
+CRITICAL REPORTS  [immediate attention required]
+-------------------------------------------------
+
+>> Cisco FMC Zero-Day, SharePoint Deserialization and Zimbra XSS Actively Exploited — CISA KEV Additions
+   Why it matters: CVE-2026-20131 (Cisco Secure Firewall Management Center SQL injection) is being hit in ransomware campaigns, directly threatening perimeter security infrastructure operated by UK banks. CVE-2026-20963 (Microsoft SharePoint deserialization) and CVE-2025-66376 (Zimbra XSS, linked to APT28) are also actively exploited and widely deployed in financial sector environments.
+   Key details:    CVE-2026-20131 — Cisco FMC SQL injection; ransomware actors actively exploiting in the wild; patch immediately. CVE-2026-20963 — SharePoint deserialization of untrusted data; unauthenticated RCE potential; CISA KEV listed. CVE-2025-66376 — Zimbra XSS; APT28 (Russian GRU) actively exploiting against government targets; patch or mitigate immediately. Verify Cisco FMC patch levels, SharePoint farm versions, and Zimbra deployments now.
+   Source:         CISA Current Activity / The Hacker News
+   Link:           https://thehackernews.com/2026/03/cisa-warns-of-zimbra-sharepoint-flaw.html
+
+>> DarkSword iOS Exploit Kit — Three Zero-Days, Multi-Actor Adoption, Full Device Takeover
+   Why it matters: DarkSword is a full-chain iOS exploit kit using six vulnerabilities including three zero-days, enabling complete device takeover. Multiple distinct threat actor groups have adopted it since at least November 2025, directly threatening executive mobile devices, BYOD estates, and mobile banking applications used by UK bank customers and staff.
+   Key details:    Identified by Google Threat Intelligence Group (Mandiant). Six-vulnerability chain; three zero-days; weaponised by multiple threat actors with different motivations. Apple has issued guidance urging iOS updates; devices on older iOS versions remain exposed. Recommended actions: enforce MDM policy requiring current iOS version across all managed and BYOD devices; brief executives on targeted spyware risk; assess mobile banking app exposure; alert Threat Hunt team to look for anomalous iOS device behaviour in MDM and network telemetry.
+   Source:         Mandiant Blog / The Hacker News
+   Link:           https://cloud.google.com/blog/topics/threat-intelligence/darksword-ios-exploit-chain/
+
+-------------------------------------------------
+INTERESTING REPORTS  [awareness / watch list]
+-------------------------------------------------
+
+>> Perseus Android Banking Malware — Device Takeover via Notes App Monitoring
+   Why it matters: Perseus is a new Android banking malware family actively distributed in the wild. It conducts device takeover (DTO) and financial fraud by monitoring notes applications to harvest credentials and sensitive banking data — a novel harvesting vector that may bypass standard mobile AV detection tuned to keyboard loggers and overlay attacks.
+   Key details:    Targets Android devices; achieves DTO enabling fraudulent transactions; monitors notes apps as a credential source in addition to standard banking overlay attacks. Recommend briefing fraud operations and mobile threat teams; review mobile fraud detection rules for anomalous session behaviour indicative of DTO; consider adding to threat hunting backlog for mobile telemetry analysis.
+   Source:         The Hacker News
+   Link:           https://thehackernews.com/2026/03/new-perseus-android-banking-malware.html
+
+>> DPRK IT Worker Network Sanctioned — Insider Threat and Supply Chain Risk to Financial Sector
+   Why it matters: OFAC has sanctioned six individuals and two entities connected to North Korea's IT worker scheme, in which DPRK nationals pose as legitimate remote contractors to infiltrate companies and funnel revenue to weapons programmes. UK financial institutions and their technology supply chains are at risk given the sector's reliance on third-party and contract IT resource.
+   Key details:    Scheme funds DPRK WMD programmes; workers gain insider access to codebases, credentials, and sensitive systems. Recommended actions: review contractor vetting procedures particularly for remote-only roles; validate identity documentation robustness; brief HR, procurement, and third-party risk teams; cross-reference contractor identities against sanctions lists. NCSC has previously issued guidance on this threat vector relevant to UK firms.
+   Source:         The Hacker News
+   Link:           https://thehackernews.com/2026/03/ofac-sanctions-dprk-it-worker-network.html
+
+-------------------------------------------------
+ANALYST NOTES
+-------------------------------------------------
+The three CISA KEV additions this week represent a confluence of high-severity vulnerabilities spanning perimeter firewall management (Cisco FMC), collaboration platforms (SharePoint, Zimbra), and remote access tooling (ScreenConnect). This pattern reflects a sustained adversary focus on enterprise infrastructure rather than endpoint exploitation alone — consistent with the pre-ransomware access brokerage model described in Mandiant's ransomware landscape analysis also published this week. UK banks running Cisco FMC should treat CVE-2026-20131 as P1: ransomware operators actively exploiting a SQL injection vulnerability in a network security management console is a worst-case scenario for lateral movement and data exfiltration. The SharePoint deserialization flaw similarly enables remote code execution and is trivially weaponisable once public proof-of-concept code circulates — patch windows should be measured in hours, not days.
+
+The DarkSword iOS exploit kit warrants elevated concern for any organisation with a mobile-first or BYOD strategy. Multi-actor adoption of a six-vulnerability chain including three zero-days signals that this tool has matured beyond initial discovery and is now part of the active threat toolkit across espionage, fraud, and potentially nation-state actors. Combined with the Perseus Android banking trojan — which introduces a novel notes-app harvesting vector — the mobile threat surface for financial institutions is materially elevated this week. MDM policy enforcement, customer fraud alerting thresholds, and mobile application anomaly detection should all be reviewed. The tax-season phishing theme adds a seasonal social engineering dimension: staff and customers are more susceptible to urgency-based lures in March and April, and phishing simulation and awareness messaging should reflect this.
+
+Longer-term, two structural themes merit attention at the strategic level. First, the DPRK IT worker scheme represents a supply-chain and insider-threat vector that is increasingly difficult to detect through conventional controls — financial sector firms with significant contractor populations and remote-working norms are particularly exposed, and third-party risk frameworks should be stress-tested against this model. Second, the proliferation of AI-assisted malware and AI-driven social engineering signals an inflection point in adversary capability development. Detection engineering teams should begin evaluating whether existing behavioural rules remain effective against AI-augmented evasion, and security awareness programmes should be updated to account for deepfake-quality social engineering content.
+
+=================================================
+Articles reviewed: 78
+Report generated: Friday 20 March 2026  09:42
+=================================================
